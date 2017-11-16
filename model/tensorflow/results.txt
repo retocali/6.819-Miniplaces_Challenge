@@ -1,0 +1,118 @@
+[12/14]
+alexnet
+drop=0.6, lr=0.01, iters=50000, bs=16 --> accuracy = (0.2571, 0.5553)
+[11/16]
+alexnet
+drop=0.5, lr=0.001, iters=100000, bs=16 --> accuracy = (0.1851, 0.4500)
+
+smallnet
+drop=0.5, lr=0.001, iters=5, bs=200, --> accuracy = (0.0116999997012, 0.056599997431)
+smallnet
+drop=0.2, lr=0.001, iters=500, bs=16, --> accuracy = (4.096e-13, 0.00010032051241)
+smallnet
+drop=0.2, lr=0.001, iters=500, bs=16, --> accuracy = (2.56000656409e-10, 0.000100001280001)
+smallnet
+drop=0.2, lr=0.001, iters=500, bs=16, --> accuracy = (2.09715468435e-18, 0.000200160256412)
+smallnet
+drop=0.3, lr=0.001, iters=500, bs=16, --> accuracy = (0.00010016, 0.00030032076964)
+smallnet
+drop=0.3, lr=0.001, iters=500, bs=16, --> accuracy = (0.0001, 0.000200000512)
+smallnet
+drop=0.4, lr=0.001, iters=500, bs=16, --> accuracy = (0.000100000000001, 0.000100160000002)
+smallnet
+drop=0.4, lr=0.001, iters=500, bs=16, --> accuracy = (0.000100000256, 0.000300320768001)
+smallnet
+drop=0.5, lr=0.001, iters=500, bs=16, --> accuracy = (1.60256e-07, 0.000100480256821)
+smallnet
+drop=0.5, lr=0.001, iters=500, bs=16, --> accuracy = (0.000100320000001, 0.000200800256003)
+smallnet
+drop=0.6, lr=0.001, iters=500, bs=16, --> accuracy = (3.20256409601e-07, 0.00010080102523)
+smallnet
+drop=0.6, lr=0.001, iters=500, bs=16, --> accuracy = (1.60000409601e-07, 0.000100320512821)
+smallnet
+drop=0.7, lr=0.001, iters=500, bs=16, --> accuracy = (0.000100000256001, 0.000400000769639)
+smallnet
+drop=0.7, lr=0.001, iters=500, bs=16, --> accuracy = (3.200004096e-07, 0.000100480257638)
+smallnet
+drop=0.7, lr=0.001, iters=500, bs=32, --> accuracy = (0.000101124364751, 0.000904981846784)
+smallnet
+drop=0.7, lr=0.001, iters=500, bs=32, --> accuracy = (0.000101123342405, 0.000503696707058)
+smallnet
+drop=0.7, lr=0.001, iters=500, bs=48, --> accuracy = (0.000102088744563, 0.00110515685167)
+smallnet
+drop=0.7, lr=0.001, iters=500, bs=48, --> accuracy = (0.000403062671579, 0.00130741050408)
+smallnet
+drop=0.7, lr=0.0001, iters=500, bs=16, --> accuracy = (0.000100320257229, 0.000301120769641)
+smallnet
+drop=0.7, lr=0.0001, iters=500, bs=16, --> accuracy = (0.00020048000041, 0.000400641282049)
+smallnet
+drop=0.7, lr=0.0003, iters=500, bs=16, --> accuracy = (7.6800131177e-10, 0.000100161282051)
+smallnet
+drop=0.7, lr=0.0003, iters=500, bs=16, --> accuracy = (0.000200160256001, 0.00050080076964)
+smallnet
+drop=0.7, lr=0.0005, iters=500, bs=16, --> accuracy = (1.60256000001e-07, 0.00010064102482)
+smallnet
+drop=0.7, lr=0.0005, iters=500, bs=16, --> accuracy = (0.000100160000821, 0.000400480769642)
+smallnet
+drop=0.7, lr=0.0007, iters=500, bs=16, --> accuracy = (0.00020000025641, 0.00020048076964)
+smallnet
+drop=0.7, lr=0.0007, iters=500, bs=16, --> accuracy = (0.000100160000819, 0.000400320257642)
+smallnet
+drop=0.7, lr=0.0009, iters=500, bs=16, --> accuracy = (4.09600000003e-13, 0.00040016025641)
+smallnet
+drop=0.7, lr=0.0009, iters=500, bs=16, --> accuracy = (0.000200000000819, 0.000200320512819)
+
+[11/16]
+
+alexnet
+drop=0.2, lr=0.001, iters=500, bs=16, --> accuracy = (0.0214, 0.087)
+alexnet
+drop=0.2, lr=0.001, iters=500, bs=16, --> accuracy = (0.015, 0.0793)
+alexnet
+drop=0.3, lr=0.001, iters=500, bs=16, --> accuracy = (0.0264, 0.1034)
+alexnet
+drop=0.3, lr=0.001, iters=500, bs=16, --> accuracy = (0.0185, 0.0919)
+alexnet
+drop=0.4, lr=0.001, iters=500, bs=16, --> accuracy = (0.0291, 0.1133)
+alexnet
+drop=0.4, lr=0.001, iters=500, bs=16, --> accuracy = (0.0257, 0.1056)
+alexnet
+drop=0.5, lr=0.001, iters=500, bs=16, --> accuracy = (0.0324, 0.1305)
+alexnet
+drop=0.5, lr=0.001, iters=500, bs=16, --> accuracy = (0.031, 0.1039)
+alexnet
+drop=0.6, lr=0.001, iters=500, bs=16, --> accuracy = (0.0274, 0.1221)
+alexnet
+drop=0.6, lr=0.001, iters=500, bs=16, --> accuracy = (0.026, 0.1238)
+alexnet
+drop=0.7, lr=0.001, iters=500, bs=16, --> accuracy = (0.0365, 0.1352)
+alexnet
+drop=0.7, lr=0.001, iters=500, bs=16, --> accuracy = (0.037, 0.1468)
+alexnet
+drop=0.7, lr=0.001, iters=500, bs=32, --> accuracy = (0.0676081730769, 0.228766025641)
+alexnet
+drop=0.7, lr=0.001, iters=500, bs=32, --> accuracy = (0.0557892628205, 0.20562900641)
+alexnet
+drop=0.7, lr=0.001, iters=500, bs=48, --> accuracy = (0.0940504832319, 0.29206731808)
+alexnet
+drop=0.7, lr=0.001, iters=500, bs=48, --> accuracy = (0.0685096172294, 0.226262026825)
+alexnet
+drop=0.7, lr=0.0001, iters=500, bs=16, --> accuracy = (0.0964, 0.2811)
+alexnet
+drop=0.7, lr=0.0001, iters=500, bs=16, --> accuracy = (0.0935, 0.2641)
+alexnet
+drop=0.7, lr=0.0003, iters=500, bs=16, --> accuracy = (0.0625, 0.1999)
+alexnet
+drop=0.7, lr=0.0003, iters=500, bs=16, --> accuracy = (0.0666, 0.2226)
+alexnet
+drop=0.7, lr=0.0005, iters=500, bs=16, --> accuracy = (0.0464, 0.1557)
+alexnet
+drop=0.7, lr=0.0005, iters=500, bs=16, --> accuracy = (0.058, 0.184)
+alexnet
+drop=0.7, lr=0.0007, iters=500, bs=16, --> accuracy = (0.0375, 0.1376)
+alexnet
+drop=0.7, lr=0.0007, iters=500, bs=16, --> accuracy = (0.0433, 0.1449)
+alexnet
+drop=0.7, lr=0.0009, iters=500, bs=16, --> accuracy = (0.0325, 0.1307)
+alexnet
+drop=0.7, lr=0.0009, iters=500, bs=16, --> accuracy = (0.0539, 0.1877)

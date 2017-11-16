@@ -111,7 +111,10 @@ opt_data_val = {
 	'randomize': False
 	}
 def alex_net_run(dropout, batch_size, learning_rate, training_iters):
-        loader_train = DataLoaderDisk(**opt_data_train)
+	# Resets the weight        
+	tf.reset_default_graph();
+
+	loader_train = DataLoaderDisk(**opt_data_train)
         loader_val = DataLoaderDisk(**opt_data_val)
         #loader_train = DataLoaderH5(**opt_data_train)
         #loader_val = DataLoaderH5(**opt_data_val)
@@ -202,13 +205,13 @@ def alex_net_run(dropout, batch_size, learning_rate, training_iters):
 			"{:.4f}".format(acc1) + ", Top5 = " + \
 			"{:.4f}".format(acc5)
 
-			acc1_total /= num_batch
-			acc5_total /= num_batch
-			print 'Evaluation Finished! Accuracy Top1 = ' + "{:.4f}".format(acc1_total) + ", Top5 = " + "{:.4f}".format(acc5_total)
+		acc1_total /= num_batch
+		acc5_total /= num_batch
+		print 'Evaluation Finished! Accuracy Top1 = ' + "{:.4f}".format(acc1_total) + ", Top5 = " + "{:.4f}".format(acc5_total)
 		
 		# Write the results of the test
 		with open('results.txt', "a") as results:
-		    	results.write("smallnet\ndrop={}, lr={}, iters={}, bs={}, --> accuracy = ({}, {})\n".format(dropout, learning_rate, training_iters, batch_size, acc1_total, acc5_total))   
+		    	results.write("alexnet\ndrop={}, lr={}, iters={}, bs={}, --> accuracy = ({}, {})\n".format(dropout, learning_rate, training_iters, batch_size, acc1_total, acc5_total))   
 
 if __name__ == '__main__':
 	alex_net_run(dropout, batch_size, learning_rate)
