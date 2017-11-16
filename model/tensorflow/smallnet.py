@@ -12,10 +12,10 @@ c = 3
 data_mean = np.asarray([0.45834960097,0.44674252445,0.41352266842])
 
 # Training Parameters
-learning_rate = 0.0005
-dropout = 0.5
-training_iters = 1500
-step_display = 100
+learning_rate = 0.0001
+dropout = 0.7
+training_iters = 2000
+step_display = 25
 step_save = 500
 path_save = './smallnet/sessions/'
 start_from = ''
@@ -51,7 +51,8 @@ def smallnet(x, keep_dropout):
 	pool1 = tf.nn.max_pool(conv1, ksize=[1,3,3,1], strides = [1, 2, 2, 1], padding='SAME')
 	
 	# DWConv + BN + Relu, 56->56
-	conv2= tf.nn.depthwise_conv2d(pool1, weights['wc2'], strides=[1, 1, 1, 1], padding='SAME')
+	with tf.device('/device:GPU:0'):
+		conv2= tf.nn.depthwise_conv2d(pool1, weights['wc2'], strides=[1, 1, 1, 1], padding='SAME')
 	conv2 = batch_norm_layer(conv2, train_phase, 'bn2')
 	conv2 = tf.nn.relu(tf.nn.bias_add(conv2, biases['bc2']))
 
@@ -76,7 +77,7 @@ def smallnet(x, keep_dropout):
 
 opt_data_train = {
 # Construct dataloader
-    #'data_h5': 'miniplaces_256_train.h5',
+    'data_h5': 'miniplaces_256_train.h5',
     'data_root': '../../data/images/',   # MODIFY PATH ACCORDINGLY
     'data_list': '../../data/train.txt', # MODIFY PATH ACCORDINGLY
     'load_size': load_size,
@@ -85,7 +86,7 @@ opt_data_train = {
     'randomize': True
     }
 opt_data_val = {
-    #'data_h5': 'miniplaces_256_val.h5',
+    'data_h5': 'miniplaces_256_val.h5',
     'data_root': '../../data/images/',   # MODIFY PATH ACCORDINGLY
     'data_list': '../../data/val.txt',   # MODIFY PATH ACCORDINGLY
     'load_size': load_size,
@@ -94,10 +95,10 @@ opt_data_val = {
     'randomize': False
     }
 
-loader_train = DataLoaderDisk(**opt_data_train)
-loader_val = DataLoaderDisk(**opt_data_val)
-#loader_train = DataLoaderH5(**opt_data_train)
-#loader_val = DataLoaderH5(**opt_data_val)
+#loader_train = DataLoaderDisk(**opt_data_train)
+#loader_val = DataLoaderDisk(**opt_data_val)
+loader_train = DataLoaderH5(**opt_data_train)
+loader_val = DataLoaderH5(**opt_data_val)
 
 # tf Graph input
 x = tf.placeholder(tf.float32, [None, fine_size, fine_size, c])
@@ -125,8 +126,8 @@ saver = tf.train.Saver()
 # define summary writer
 writer = tf.summary.FileWriter('./smallnet/logs/', graph=tf.get_default_graph())
 
-# Launch the graph
-with tf.Session() as sess:
+# Launch the graph allowing for the gpu to be found
+with tf.Session(config=tf.ConfigProto(log_device_placement=True)) as sess:
     # Initialization
     if len(start_from)>1:
         saver.restore(sess, start_from)

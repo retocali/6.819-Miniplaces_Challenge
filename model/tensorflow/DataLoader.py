@@ -120,9 +120,7 @@ class DataLoaderDisk(object):
                 # Adds Gaussian Noise to the Image
                 noisy = np.random.random_integers(0, 1)
                 if noisy>0:
-                    scipy.misc.imshow(image);
                     image = add_gaussian_noise(image, np.random.random_sample()/5)
-                    scipy.misc.imshow(image);
 
             else:
                 offset_h = (self.load_size-self.fine_size)/2
