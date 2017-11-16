@@ -34,11 +34,15 @@ class DataLoaderH5(object):
             image = self.im_set[self._idx]
             image = image.astype(np.float32)/255. - self.data_mean
             if self.randomize:
+                # Flips the image
                 flip = np.random.random_integers(0, 1)
                 if flip>0:
                     image = image[:,::-1,:]
+
+                # Randomly crops
                 offset_h = np.random.random_integers(0, self.load_size-self.fine_size)
                 offset_w = np.random.random_integers(0, self.load_size-self.fine_size)
+
             else:
                 offset_h = (self.load_size-self.fine_size)/2
                 offset_w = (self.load_size-self.fine_size)/2
@@ -104,11 +108,22 @@ class DataLoaderDisk(object):
             image = image.astype(np.float32)/255.
             image = image - self.data_mean
             if self.randomize:
+                # Flips the image
                 flip = np.random.random_integers(0, 1)
                 if flip>0:
                     image = image[:,::-1,:]
+
+                # Randomly crops an upscaled version
                 offset_h = np.random.random_integers(0, self.load_size-self.fine_size)
                 offset_w = np.random.random_integers(0, self.load_size-self.fine_size)
+
+                # Adds Gaussian Noise to the Image
+                noisy = np.random.random_integers(0, 1)
+                if noisy>0:
+                    scipy.misc.imshow(image);
+                    image = add_gaussian_noise(image, np.random.random_sample()/5)
+                    scipy.misc.imshow(image);
+
             else:
                 offset_h = (self.load_size-self.fine_size)/2
                 offset_w = (self.load_size-self.fine_size)/2
@@ -127,3 +142,11 @@ class DataLoaderDisk(object):
 
     def reset(self):
         self._idx = 0
+
+def add_gaussian_noise(image, sigma=1./4):
+    noise = np.random.normal(0, sigma, np.shape(image))
+    return image+noise
+    
+
+
+
