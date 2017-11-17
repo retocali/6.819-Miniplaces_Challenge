@@ -120,9 +120,7 @@ class DataLoaderDisk(object):
                 # Adds Gaussian Noise to the Image
                 noisy = np.random.random_integers(0, 1)
                 if noisy>0:
-                    scipy.misc.imshow(image);
                     image = add_gaussian_noise(image, np.random.random_sample()/5)
-                    scipy.misc.imshow(image);
 
             else:
                 offset_h = (self.load_size-self.fine_size)/2
@@ -143,10 +141,53 @@ class DataLoaderDisk(object):
     def reset(self):
         self._idx = 0
 
+# Loading test data from disk
+class TestDataLoaderDisk(object):
+    def __init__(self, **kwargs):
+
+        self.load_size = int(kwargs['load_size'])
+        self.fine_size = int(kwargs['fine_size'])
+        self.data_mean = np.array(kwargs['data_mean'])
+        self.data_root = os.path.join(kwargs['data_root'])
+
+        # generate list of paths to test images
+        self.list_im = []
+        for i in range(1,10001):
+            imgstr = 'test/' + '0'*(8-len(str(i))) + str(i) + '.jpg'
+            self.list_im.append(os.path.join(self.data_root, imgstr))
+        self.list_im = np.array(self.list_im, np.object)
+        self.num = self.list_im.shape[0]
+        print('# Images found:'), self.num
+
+        self._idx = 0
+        
+    def next_batch(self, batch_size):
+        images_batch = np.zeros((batch_size, self.fine_size, self.fine_size, 3)) 
+        for i in range(batch_size):
+	    # Prepare image to load	
+            image = scipy.misc.imread(self.list_im[self._idx])
+            image = scipy.misc.imresize(image, (self.load_size, self.load_size))
+            image = image.astype(np.float32)/255.
+            image = image - self.data_mean
+            offset_h = (self.load_size-self.fine_size)/2
+            offset_w = (self.load_size-self.fine_size)/2
+
+            images_batch[i, ...] =  image[offset_h:offset_h+self.fine_size, offset_w:offset_w+self.fine_size, :]
+            
+            self._idx += 1
+            if self._idx == self.num:
+                self._idx = 0
+        
+        return images_batch
+    
+    def size(self):
+        return self.num
+
+    def reset(self):
+        self._idx = 0
+
+
 def add_gaussian_noise(image, sigma=1./4):
     noise = np.random.normal(0, sigma, np.shape(image))
     return image+noise
     
-
-
-

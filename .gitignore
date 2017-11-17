@@ -101,3 +101,15 @@ ENV/
 
 # mypy
 .mypy_cache/
+
+# h5
+*.h5
+
+# ignore logs and sessions, keep .txt
+/model/tensorflow/alexnet/sessions/*
+/model/tensorflow/alexnet/logs/*
+/model/tensorflow/smallnet/sessions/*
+/model/tensorflow/smallnet/logs/*
+/model/tensorflow/submitnet/sessions/*
+/model/tensorflow/submitnet/logs/*
+

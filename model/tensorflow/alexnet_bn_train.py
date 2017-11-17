@@ -5,19 +5,19 @@ from tensorflow.contrib.layers.python.layers import batch_norm
 from DataLoader import *
 
 # Dataset Parameters
-batch_size = 16
+batch_size = 48
 load_size = 256
 fine_size = 224
 c = 3
 data_mean = np.asarray([0.45834960097,0.44674252445,0.41352266842])
 
 # Training Parameters
-learning_rate = 0.001
+learning_rate = 0.0001
 dropout = 0.7
 training_iters = 10000
-step_display = 50
+step_display = 500
 step_save = 10000
-path_save = './alexnet/sessions'
+path_save = './alexnet/model.cpkt'
 start_from = ''
 
 def batch_norm_layer(x, train_phase, scope_bn):
@@ -93,7 +93,7 @@ def alexnet(x, keep_dropout, train_phase):
 
 # Construct dataloader
 opt_data_train = {
-	#'data_h5': 'miniplaces_256_train.h5',
+	'data_h5': 'miniplaces_256_train.h5',
 	'data_root': '../../data/images/',   # MODIFY PATH ACCORDINGLY
 	'data_list': '../../data/train.txt', # MODIFY PATH ACCORDINGLY
 	'load_size': load_size,
@@ -102,7 +102,7 @@ opt_data_train = {
 	'randomize': True
 	}
 opt_data_val = {
-	#'data_h5': 'miniplaces_256_val.h5',
+	'data_h5': 'miniplaces_256_val.h5',
 	'data_root': '../../data/images/',   # MODIFY PATH ACCORDINGLY
 	'data_list': '../../data/val.txt',   # MODIFY PATH ACCORDINGLY
 	'load_size': load_size,
@@ -114,10 +114,10 @@ def alex_net_run(dropout, batch_size, learning_rate, training_iters):
 	# Resets the weight        
 	tf.reset_default_graph();
 
-	loader_train = DataLoaderDisk(**opt_data_train)
-        loader_val = DataLoaderDisk(**opt_data_val)
-        #loader_train = DataLoaderH5(**opt_data_train)
-        #loader_val = DataLoaderH5(**opt_data_val)
+	#loader_train = DataLoaderDisk(**opt_data_train)
+        #loader_val = DataLoaderDisk(**opt_data_val)
+        loader_train = DataLoaderH5(**opt_data_train)
+        loader_val = DataLoaderH5(**opt_data_val)
 
         # tf Graph input
         x = tf.placeholder(tf.float32, [None, fine_size, fine_size, c])
@@ -210,8 +210,8 @@ def alex_net_run(dropout, batch_size, learning_rate, training_iters):
 		print 'Evaluation Finished! Accuracy Top1 = ' + "{:.4f}".format(acc1_total) + ", Top5 = " + "{:.4f}".format(acc5_total)
 		
 		# Write the results of the test
-		with open('results.txt', "a") as results:
+		with open('alexnet/results.txt', "a") as results:
 		    	results.write("alexnet\ndrop={}, lr={}, iters={}, bs={}, --> accuracy = ({}, {})\n".format(dropout, learning_rate, training_iters, batch_size, acc1_total, acc5_total))   
 
 if __name__ == '__main__':
-	alex_net_run(dropout, batch_size, learning_rate)
+	alex_net_run(dropout, batch_size, learning_rate, training_iters)
