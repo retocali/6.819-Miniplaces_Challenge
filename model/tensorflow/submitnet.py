@@ -12,13 +12,13 @@ c = 3
 data_mean = np.asarray([0.45834960097,0.44674252445,0.41352266842])
 
 # Training Parameters
-learning_rate = 0.0001
+learning_rate = 0.00005
 dropout = 0.7
 training_iters = 10000
 step_display = 500
 step_save = 10000
 path_save = './submitnet/sessions'
-start_from = './alexnet/sessions-10000'
+start_from = './alexnet/sessions/model.ckpt-' + str(step_save)
 
 def batch_norm_layer(x, train_phase, scope_bn):
 	return batch_norm(x, decay=0.9, center=True, scale=True,
