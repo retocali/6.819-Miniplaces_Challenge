@@ -39,6 +39,15 @@ class DataLoaderH5(object):
                 if flip>0:
                     image = image[:,::-1,:]
 
+                # Adds Gaussian Noise to the Image
+                noisy = np.random.random_integers(0, 1)
+                if noisy>0:
+                    image = add_gaussian_noise(image, np.random.random_sample()/5)
+
+                # Color Shift the Image
+                # shift = np.random.random_intergers(0, 1)
+                # if shift>0:
+                #    image = color_shift(image);
                 # Randomly crops
                 offset_h = np.random.random_integers(0, self.load_size-self.fine_size)
                 offset_w = np.random.random_integers(0, self.load_size-self.fine_size)
@@ -190,4 +199,11 @@ class TestDataLoaderDisk(object):
 def add_gaussian_noise(image, sigma=1./4):
     noise = np.random.normal(0, sigma, np.shape(image))
     return image+noise
-    
+
+def color_shift(image, n=8):
+    full_shift = np.zero(np.shape(image))
+    for i in range(3):
+        shift = np.random.normal(-n,n)
+        if (np.random.normal(0,1) > 0):
+            full_shift[i] = full_like(full_shift[i], shift)
+    return image+full_shift
