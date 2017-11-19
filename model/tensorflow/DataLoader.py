@@ -45,10 +45,11 @@ class DataLoaderH5(object):
                     image = add_gaussian_noise(image, np.random.random_sample()/5)
 
                 # Color Shift the Image
-                # shift = np.random.random_intergers(0, 1)
-                # if shift>0:
-                #    image = color_shift(image);
-                # Randomly crops
+                shift = np.random.random_integers(0, 1)
+                if shift>0:
+                   image = color_shift(image);
+                
+                #Randomly crops
                 offset_h = np.random.random_integers(0, self.load_size-self.fine_size)
                 offset_w = np.random.random_integers(0, self.load_size-self.fine_size)
 
@@ -130,7 +131,11 @@ class DataLoaderDisk(object):
                 noisy = np.random.random_integers(0, 1)
                 if noisy>0:
                     image = add_gaussian_noise(image, np.random.random_sample()/5)
-
+                
+                # Color Shift the Image
+                shift = np.random.random_integers(0, 1)
+                if shift>0:
+                   image = color_shift(image);
             else:
                 offset_h = (self.load_size-self.fine_size)/2
                 offset_w = (self.load_size-self.fine_size)/2
@@ -201,9 +206,9 @@ def add_gaussian_noise(image, sigma=1./4):
     return image+noise
 
 def color_shift(image, n=8):
-    full_shift = np.zero(np.shape(image))
+    full_shift = np.zeros(np.shape(image))
     for i in range(3):
-        shift = np.random.normal(-n,n)
+        shift = np.random.normal(-1,1)
         if (np.random.normal(0,1) > 0):
-            full_shift[i] = full_like(full_shift[i], shift)
+            full_shift[:,:,i] = np.full_like(full_shift[:,:,i], shift)
     return image+full_shift
