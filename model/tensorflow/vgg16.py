@@ -5,7 +5,7 @@ from tensorflow.contrib.layers.python.layers import batch_norm
 from DataLoader import *
 
 # Dataset Parameters
-batch_size = 48
+batch_size = 16
 load_size = 256
 fine_size = 224
 c = 3
@@ -13,7 +13,7 @@ data_mean = np.asarray([0.45834960097,0.44674252445,0.41352266842])
 
 # Training Parameters
 learning_rate = 0.000001
-dropout = 0.6
+dropout = 0.5
 training_iters = 10000
 step_display = 50
 step_save = 10000
@@ -27,32 +27,37 @@ def batch_norm_layer(x, train_phase, scope_bn):
 	reuse=None,
 	trainable=True,
 	scope=scope_bn)
-	
+
+def initializer():
+    return tf.contrib.layers.xavier_initializer_conv2d()
+
 def vggnet(x, keep_dropout, train_phase):
+        
+        #initializer = tf.contrib.layers.xavier_initializer_conv2d()
 	weights = {
             # Conv Layers 3x3: 64
-	    'wc1': tf.Variable(tf.random_normal([3, 3, 3, 64], stddev=np.sqrt(2./(3*3*3)))),
-	    'wc2': tf.Variable(tf.random_normal([3, 3, 64, 64], stddev=np.sqrt(2./(3*3*64)))),
+	    'wc1': tf.get_variable('wc1', shape=[3, 3, 3, 64], initializer=initializer()),
+	    'wc2': tf.get_variable('wc2', shape=[3, 3, 64, 64], initializer=initializer()),
             # Conv Layers 3x3 : 128
-            'wc3': tf.Variable(tf.random_normal([3, 3, 64, 128], stddev=np.sqrt(2./(3*3*64)))),
-	    'wc4': tf.Variable(tf.random_normal([3, 3, 128, 128], stddev=np.sqrt(2./(3*3*128)))),
+            'wc3': tf.get_variable('wc3', shape=[3, 3, 64, 128], initializer=initializer()),
+	    'wc4': tf.get_variable('wc4', shape=[3, 3, 128, 128], initializer=initializer()),
             # Conv Layers 3x3 : 256 
-            'wc5': tf.Variable(tf.random_normal([3, 3, 128, 256], stddev=np.sqrt(2./(3*3*128)))),
-	    'wc6': tf.Variable(tf.random_normal([3, 3, 256, 256], stddev=np.sqrt(2./(3*3*256)))),
-            'wc7': tf.Variable(tf.random_normal([3, 3, 256, 256], stddev=np.sqrt(2./(3*3*256)))),
+            'wc5': tf.get_variable('wc5', shape=[3, 3, 128, 256], initializer=initializer()),
+	    'wc6': tf.get_variable('wc6', shape=[3, 3, 256, 256], initializer=initializer()),
+            'wc7': tf.get_variable('wc7', shape=[3, 3, 256, 256], initializer=initializer()),
             # Conv Layers 3x3 : 512
-	    'wc8': tf.Variable(tf.random_normal([3, 3, 256, 512], stddev=np.sqrt(2./(3*3*256)))),
-            'wc9': tf.Variable(tf.random_normal([3, 3, 512, 512], stddev=np.sqrt(2./(3*3*512)))),
-            'wc10': tf.Variable(tf.random_normal([3, 3, 512, 512], stddev=np.sqrt(2./(3*3*512)))),
-            'wc11': tf.Variable(tf.random_normal([3, 3, 512, 512], stddev=np.sqrt(2./(3*3*512)))),
-            'wc12': tf.Variable(tf.random_normal([3, 3, 512, 512], stddev=np.sqrt(2./(3*3*512)))),
-            'wc13':tf.Variable(tf.random_normal([3, 3, 512, 512], stddev=np.sqrt(2./(3*3*512)))),
+	    'wc8': tf.get_variable('wc8', shape=[3, 3, 256, 512], initializer=initializer()),
+            'wc9': tf.get_variable('wc9', shape=[3, 3, 512, 512], initializer=initializer()),
+            'wc10':tf.get_variable('wc10', shape=[3, 3, 512, 512], initializer=initializer()),
+            'wc11':tf.get_variable('wc11', shape=[3, 3, 512, 512], initializer=initializer()),
+            'wc12':tf.get_variable('wc12', shape=[3, 3, 512, 512], initializer=initializer()),
+            'wc13':tf.get_variable('wc13', shape=[3, 3, 512, 512], initializer=initializer()),
             # FC 2048
-	    'wfc1': tf.Variable(tf.random_normal([512, 4096], stddev=np.sqrt(2./4096))),
-	    'wfc2': tf.Variable(tf.random_normal([4096, 4096], stddev=np.sqrt(2./4096))),
+	    'wfc1': tf.get_variable('wfc1', shape=[512, 4096], initializer=initializer()),
+	    'wfc2': tf.get_variable('wfc2', shape=[4096, 4096], initializer=initializer()),
             # FC 1000
-            'w0': tf.Variable(tf.random_normal([4096, 1000], stddev=np.sqrt(2./1000))),
-            'wo': tf.Variable(tf.random_normal([1000, 100], stddev=np.sqrt(2./100)))
+            'w0': tf.get_variable('w0', shape=[4096, 1000], initializer=initializer()),
+            'wo': tf.get_variable('wo', shape=[1000, 100], initializer=initializer()),
 	}
 
 	biases = {
