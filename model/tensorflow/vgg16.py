@@ -12,8 +12,8 @@ c = 3
 data_mean = np.asarray([0.45834960097,0.44674252445,0.41352266842])
 
 # Training Parameters
-learning_rate = 0.00001
-dropout = 0.5
+learning_rate = 0.000001
+dropout = 0.6
 training_iters = 10000
 step_display = 50
 step_save = 10000
@@ -31,63 +31,74 @@ def batch_norm_layer(x, train_phase, scope_bn):
 def vggnet(x, keep_dropout, train_phase):
 	weights = {
             # Conv Layers 3x3: 64
-	    'wc1': tf.Variable(tf.random_normal([3, 3, 3, 64], stddev=np.sqrt(2./(3*3*64)))),
+	    'wc1': tf.Variable(tf.random_normal([3, 3, 3, 64], stddev=np.sqrt(2./(3*3*3)))),
 	    'wc2': tf.Variable(tf.random_normal([3, 3, 64, 64], stddev=np.sqrt(2./(3*3*64)))),
             # Conv Layers 3x3 : 128
-            'wc3': tf.Variable(tf.random_normal([3, 3, 64, 128], stddev=np.sqrt(2./(3*3*128)))),
+            'wc3': tf.Variable(tf.random_normal([3, 3, 64, 128], stddev=np.sqrt(2./(3*3*64)))),
 	    'wc4': tf.Variable(tf.random_normal([3, 3, 128, 128], stddev=np.sqrt(2./(3*3*128)))),
             # Conv Layers 3x3 : 256 
-            'wc5': tf.Variable(tf.random_normal([3, 3, 128, 256], stddev=np.sqrt(2./(3*3*256)))),
+            'wc5': tf.Variable(tf.random_normal([3, 3, 128, 256], stddev=np.sqrt(2./(3*3*128)))),
 	    'wc6': tf.Variable(tf.random_normal([3, 3, 256, 256], stddev=np.sqrt(2./(3*3*256)))),
+            'wc7': tf.Variable(tf.random_normal([3, 3, 256, 256], stddev=np.sqrt(2./(3*3*256)))),
             # Conv Layers 3x3 : 512
-	    'wc7': tf.Variable(tf.random_normal([3, 3, 256, 512], stddev=np.sqrt(2./(3*3*512)))),
-            'wc8': tf.Variable(tf.random_normal([3, 3, 512, 512], stddev=np.sqrt(2./(3*3*512)))),
+	    'wc8': tf.Variable(tf.random_normal([3, 3, 256, 512], stddev=np.sqrt(2./(3*3*256)))),
             'wc9': tf.Variable(tf.random_normal([3, 3, 512, 512], stddev=np.sqrt(2./(3*3*512)))),
-            'wc10':tf.Variable(tf.random_normal([3, 3, 512, 512], stddev=np.sqrt(2./(3*3*512)))),
+            'wc10': tf.Variable(tf.random_normal([3, 3, 512, 512], stddev=np.sqrt(2./(3*3*512)))),
+            'wc11': tf.Variable(tf.random_normal([3, 3, 512, 512], stddev=np.sqrt(2./(3*3*512)))),
+            'wc12': tf.Variable(tf.random_normal([3, 3, 512, 512], stddev=np.sqrt(2./(3*3*512)))),
+            'wc13':tf.Variable(tf.random_normal([3, 3, 512, 512], stddev=np.sqrt(2./(3*3*512)))),
             # FC 2048
 	    'wfc1': tf.Variable(tf.random_normal([512, 4096], stddev=np.sqrt(2./4096))),
 	    'wfc2': tf.Variable(tf.random_normal([4096, 4096], stddev=np.sqrt(2./4096))),
             # FC 1000
-            'wo': tf.Variable(tf.random_normal([4096, 100], stddev=np.sqrt(2./1000)))
+            'w0': tf.Variable(tf.random_normal([4096, 1000], stddev=np.sqrt(2./1000))),
+            'wo': tf.Variable(tf.random_normal([1000, 100], stddev=np.sqrt(2./100)))
 	}
 
 	biases = {
-	    'bo': tf.Variable(tf.ones(100))
+	    'b0': tf.Variable(tf.zeros(1000)),
+            'bo': tf.Variable(tf.ones(100))
 	}
 
 	#2 Conv64 + ReLU + Pool
-	conv1 = tf.nn.conv2d(x, weights['wc1'], strides=[1, 7, 7, 1], padding='SAME')
+	conv1 = tf.nn.conv2d(x, weights['wc1'], strides=[1, 2, 2, 1], padding='SAME')
 	conv1 = tf.nn.relu(conv1)
-        conv2 = tf.nn.conv2d(conv1, weights['wc2'], strides=[1, 3, 3, 1], padding='SAME')
+        conv2 = tf.nn.conv2d(conv1, weights['wc2'], strides=[1, 2, 2, 1], padding='SAME')
 	conv2 = tf.nn.relu(conv2)
-        pool1 = tf.nn.max_pool(conv2, ksize=[1, 3, 3, 1], strides=[1, 2, 2, 1], padding='SAME')
+        pool1 = tf.nn.max_pool(conv2, ksize=[1, 2, 2, 1], strides=[1, 2, 2, 1], padding='SAME')
 
 	#2 Conv128 + ReLU + Conv
-	conv3 = tf.nn.conv2d(pool1, weights['wc3'], strides=[1, 7, 7, 1], padding='SAME')
+	conv3 = tf.nn.conv2d(pool1, weights['wc3'], strides=[1, 2, 2, 1], padding='SAME')
 	conv3 = tf.nn.relu(conv3)
-        conv4 = tf.nn.conv2d(conv3, weights['wc4'], strides=[1, 3, 3, 1], padding='SAME')
+        conv4 = tf.nn.conv2d(conv3, weights['wc4'], strides=[1, 2, 2, 1], padding='SAME')
 	conv4 = tf.nn.relu(conv4)
-        pool2 = tf.nn.max_pool(conv4, ksize=[1, 3, 3, 1], strides=[1, 2, 2, 1], padding='SAME')
+        pool2 = tf.nn.max_pool(conv4, ksize=[1, 2, 2, 1], strides=[1, 2, 2, 1], padding='SAME')
 
 	#2 Conv256 + ReLU + Conv
-	conv5 = tf.nn.conv2d(pool2, weights['wc5'], strides=[1, 7, 7, 1], padding='SAME')
+	conv5 = tf.nn.conv2d(pool2, weights['wc5'], strides=[1, 2, 2, 1], padding='SAME')
 	conv5 = tf.nn.relu(conv5)
-        conv6 = tf.nn.conv2d(conv5, weights['wc6'], strides=[1, 3, 3, 1], padding='SAME')
+        conv6 = tf.nn.conv2d(conv5, weights['wc6'], strides=[1, 2, 2, 1], padding='SAME')
 	conv6 = tf.nn.relu(conv6)
-        pool3 = tf.nn.max_pool(conv6, ksize=[1, 3, 3, 1], strides=[1, 2, 2, 1], padding='SAME')
+        conv7 = tf.nn.conv2d(conv6, weights['wc7'], strides=[1, 2, 2, 1], padding='SAME')
+	conv7 = tf.nn.relu(conv7)
+        pool3 = tf.nn.max_pool(conv7, ksize=[1, 2, 2, 1], strides=[1, 2, 2, 1], padding='SAME')
 
 	#4 Conv512 + ReLU + Conv
-	conv7 = tf.nn.conv2d(pool3, weights['wc7'], strides=[1, 7, 7, 1], padding='SAME')
-	conv7 = tf.nn.relu(conv7)
-        conv8 = tf.nn.conv2d(conv7, weights['wc8'], strides=[1, 3, 3, 1], padding='SAME')
+	conv8 = tf.nn.conv2d(pool3, weights['wc8'], strides=[1, 2, 2, 1], padding='SAME')
 	conv8 = tf.nn.relu(conv8)
-        pool4 = tf.nn.max_pool(conv8, ksize=[1, 3, 3, 1], strides=[1, 2, 2, 1], padding='SAME')
-        
-        conv9 = tf.nn.conv2d(pool4, weights['wc9'], strides=[1, 7, 7, 1], padding='SAME')
+        conv9 = tf.nn.conv2d(conv8, weights['wc9'], strides=[1, 2, 2, 1], padding='SAME')
 	conv9 = tf.nn.relu(conv9)
-        conv10= tf.nn.conv2d(conv9, weights['wc10'],strides=[1, 3, 3, 1], padding='SAME')
+        conv10= tf.nn.conv2d(conv9, weights['wc10'], strides=[1, 2, 2, 1], padding='SAME')
 	conv10= tf.nn.relu(conv10)
-        pool5 = tf.nn.max_pool(conv10, ksize=[1, 3, 3, 1], strides=[1, 2, 2, 1], padding='SAME')
+        pool4 = tf.nn.max_pool(conv10, ksize=[1, 2, 2, 1], strides=[1, 2, 2, 1], padding='SAME')
+        
+        conv11= tf.nn.conv2d(pool4, weights['wc11'], strides=[1, 2, 2, 1], padding='SAME')
+	conv11= tf.nn.relu(conv11)
+        conv12= tf.nn.conv2d(conv11, weights['wc12'],strides=[1, 2, 2, 1], padding='SAME')
+	conv12= tf.nn.relu(conv12)
+        conv13= tf.nn.conv2d(conv12, weights['wc13'],strides=[1, 2, 2, 1], padding='SAME')
+	conv13= tf.nn.relu(conv13)
+        pool5 = tf.nn.max_pool(conv13, ksize=[1, 2, 2, 1], strides=[1, 2, 2, 1], padding='SAME')
 	
         # FC + ReLU + Dropout
 	fc1 = tf.reshape(pool5, [-1, weights['wfc1'].get_shape().as_list()[0]])
@@ -100,9 +111,13 @@ def vggnet(x, keep_dropout, train_phase):
 	fc2 = tf.nn.relu(fc2)
 	fc2 = tf.nn.dropout(fc2, keep_dropout)
 
-	# Output FC
-	out = tf.add(tf.matmul(fc2, weights['wo']), biases['bo'])
-	
+	# Extra FC
+	fc3 = tf.add(tf.matmul(fc2, weights['w0']), biases['b0'])
+        fc3 = tf.nn.dropout(fc3, keep_dropout)
+
+        # Output
+        out = tf.add(tf.matmul(fc3, weights['wo']), biases['bo'])
+
 	return out
 
 # Construct dataloader
