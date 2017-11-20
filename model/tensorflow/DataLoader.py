@@ -119,23 +119,23 @@ class DataLoaderDisk(object):
             image = image - self.data_mean
             if self.randomize:
                 # Flips the image
-                flip = np.random.random_integers(0, 1)
-                if flip>0:
-                    image = image[:,::-1,:]
+           #     flip = np.random.random_integers(0, 1)
+           #     if flip>0:
+           #         image = image[:,::-1,:]
 
                 # Randomly crops an upscaled version
-                offset_h = np.random.random_integers(0, self.load_size-self.fine_size)
-                offset_w = np.random.random_integers(0, self.load_size-self.fine_size)
+                offset_h = 0#np.random.random_integers(0, self.load_size-self.fine_size)
+                offset_w = 0#np.random.random_integers(0, self.load_size-self.fine_size)
 
                 # Adds Gaussian Noise to the Image
-                noisy = np.random.random_integers(0, 1)
-                if noisy>0:
-                    image = add_gaussian_noise(image, np.random.random_sample()/5)
+            #    noisy = np.random.random_integers(0, 1)
+            #    if noisy>0:
+            #        image = add_gaussian_noise(image, np.random.random_sample()/5)
                 
                 # Color Shift the Image
-                shift = np.random.random_integers(0, 1)
-                if shift>0:
-                   image = color_shift(image);
+            #    shift = np.random.random_integers(0, 1)
+            #    if shift>0:
+            #       image = color_shift(image);
             else:
                 offset_h = (self.load_size-self.fine_size)/2
                 offset_w = (self.load_size-self.fine_size)/2
@@ -205,10 +205,10 @@ def add_gaussian_noise(image, sigma=1./4):
     noise = np.random.normal(0, sigma, np.shape(image))
     return image+noise
 
-def color_shift(image, n=8):
+def color_shift(image, n=0.1):
     full_shift = np.zeros(np.shape(image))
     for i in range(3):
-        shift = np.random.normal(-0.5,0.5)
+        shift = np.random.normal(-n,n)
         if (np.random.normal(0,1) > 0):
             full_shift[:,:,i] = np.full_like(full_shift[:,:,i], shift)
     return image+full_shift
