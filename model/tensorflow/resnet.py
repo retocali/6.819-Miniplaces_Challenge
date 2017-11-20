@@ -5,17 +5,17 @@ from tensorflow.contrib.layers.python.layers import batch_norm
 from DataLoader import *
 
 # Dataset Parameters
-batch_size = 4
+batch_size = 48
 load_size = 256
 fine_size = 224
 c = 3
 data_mean = np.asarray([0.45834960097,0.44674252445,0.41352266842])
 
 # Training Parameters
-learning_rate = 0.001
-training_iters = 100
-step_display = 1
-step_save = 100
+learning_rate = 0.00001
+training_iters = 30000
+step_display = 5000
+step_save = 5000
 path_save = './resnet/sessions/model.ckpt'
 start_from = ''
 

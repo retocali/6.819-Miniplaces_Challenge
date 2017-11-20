@@ -12,11 +12,13 @@ c = 3
 data_mean = np.asarray([0.45834960097,0.44674252445,0.41352266842])
 
 # Training Parameters
-learning_rate = 0.000001
-dropout = 0.9
-training_iters = 30000
-step_display = 5000
-step_save = 30000
+learning_rate = 0.0001
+dropout = 0.8
+training_iters = 10000
+epsilon = 0.05
+step_display = 500
+
+step_save = 10000
 path_save = './alexnet/sessions/model.ckpt'
 start_from = ''
 
@@ -29,16 +31,17 @@ def batch_norm_layer(x, train_phase, scope_bn):
 	scope=scope_bn)
 	
 def alexnet(x, keep_dropout, train_phase):
-	weights = {
-	    'wc1': tf.Variable(tf.random_normal([11, 11, 3, 96], stddev=np.sqrt(2./(11*11*3)))),
-	    'wc2': tf.Variable(tf.random_normal([5, 5, 96, 256], stddev=np.sqrt(2./(5*5*96)))),
-	    'wc3': tf.Variable(tf.random_normal([3, 3, 256, 384], stddev=np.sqrt(2./(3*3*256)))),
-	    'wc4': tf.Variable(tf.random_normal([3, 3, 384, 256], stddev=np.sqrt(2./(3*3*384)))),
-	    'wc5': tf.Variable(tf.random_normal([3, 3, 256, 256], stddev=np.sqrt(2./(3*3*256)))),
+	initializer=tf.contrib.layers.xavier_initializer_conv2d()
+        weights = {
+	    'wc1': tf.Variable(initializer([11, 11, 3, 96])),#, stddev=np.sqrt(2./(11*11*3)))),
+	    'wc2': tf.Variable(initializer([5, 5, 96, 256])),#, stddev=np.sqrt(2./(5*5*96)))),
+	    'wc3': tf.Variable(initializer([3, 3, 256, 384])),#, stddev=np.sqrt(2./(3*3*256)))),
+	    'wc4': tf.Variable(initializer([3, 3, 384, 256])),#, stddev=np.sqrt(2./(3*3*384)))),
+	    'wc5': tf.Variable(initializer([3, 3, 256, 256])),#, stddev=np.sqrt(2./(3*3*256)))),
 
-	    'wf6': tf.Variable(tf.random_normal([7*7*256, 4096], stddev=np.sqrt(2./(7*7*256)))),
-	    'wf7': tf.Variable(tf.random_normal([4096, 4096], stddev=np.sqrt(2./4096))),
-	    'wo': tf.Variable(tf.random_normal([4096, 100], stddev=np.sqrt(2./4096)))
+	    'wf6': tf.Variable(initializer([7*7*256, 4096])),#, stddev=np.sqrt(2./(7*7*256)))),
+	    'wf7': tf.Variable(initializer([4096, 4096])),#, stddev=np.sqrt(2./4096))),
+	    'wo': tf.Variable(initializer([4096, 100]))#, stddev=np.sqrt(2./4096)))
 	}
 
 	biases = {
@@ -114,10 +117,10 @@ def alex_net_run(dropout, batch_size, learning_rate, training_iters):
 	# Resets the weight        
 	tf.reset_default_graph();
 
-	#loader_train = DataLoaderDisk(**opt_data_train)
-        #loader_val = DataLoaderDisk(**opt_data_val)
-        loader_train = DataLoaderH5(**opt_data_train)
-        loader_val = DataLoaderH5(**opt_data_val)
+	loader_train = DataLoaderDisk(**opt_data_train)
+        loader_val = DataLoaderDisk(**opt_data_val)
+        #loader_train = DataLoaderH5(**opt_data_train)
+        #loader_val = DataLoaderH5(**opt_data_val)
 
         # tf Graph input
         x = tf.placeholder(tf.float32, [None, fine_size, fine_size, c])
@@ -154,7 +157,7 @@ def alex_net_run(dropout, batch_size, learning_rate, training_iters):
 			sess.run(init)
 		
 		step = 0
-
+                avg_acc = 0
 		while step < training_iters:
 			# Load a batch of training data
 			images_batch, labels_batch = loader_train.next_batch(batch_size)
@@ -179,9 +182,13 @@ def alex_net_run(dropout, batch_size, learning_rate, training_iters):
 				
 			# Run optimization op (backprop)
 			sess.run(train_optimizer, feed_dict={x: images_batch, y: labels_batch, keep_dropout: dropout, train_phase: True})
-				
+		        
+                        # Change the learning rate based on accuracy so far
+                        if abs(avg_acc - acc5) > epsilon:
+                            learning_rate = min(learning_rate/2, 0.0000001)
+		        avg_acc = (avg_acc+acc5)/2.
+
 			step += 1
-			
 			# Save model
 			if step % step_save == 0:
 				saver.save(sess, path_save, global_step=step)

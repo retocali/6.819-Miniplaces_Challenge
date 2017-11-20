@@ -18,7 +18,7 @@ training_iters = 10000
 step_display = 5000
 step_save = 10000
 path_save = './submitnet/sessions'
-start_from = './alexnet/sessions/model.ckpt-30000' # str(step_save)
+start_from = './alexnet/sessions/model.ckpt-30000' #str(step_save)
 
 def batch_norm_layer(x, train_phase, scope_bn):
 	return batch_norm(x, decay=0.9, center=True, scale=True,
@@ -134,7 +134,7 @@ def alex_net_run(dropout, batch_size, learning_rate, testing_iters):
 				    print '[%s]:' %(datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
 				    print 'iteration: %d' %(step)
 						
-				# Get prediction
+	# Get prediction
                 values, inds = sess.run(predictions, feed_dict={x: images_batch, keep_dropout: 1., train_phase: False})
                 inds = inds[0].tolist()
 				# Write the results of the test
