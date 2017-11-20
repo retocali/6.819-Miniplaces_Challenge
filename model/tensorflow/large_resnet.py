@@ -5,17 +5,17 @@ from tensorflow.contrib.layers.python.layers import batch_norm
 from DataLoader import *
 
 # Dataset Parameters
-batch_size = 4
+batch_size = 128
 load_size = 256
 fine_size = 224
 c = 3
 data_mean = np.asarray([0.45834960097,0.44674252445,0.41352266842])
 
 # Training Parameters
-learning_rate = 0.001
-training_iters = 100
-step_display = 1
-step_save = 100
+learning_rate = 0.00001
+training_iters = 10000
+step_display = 1000
+step_save = 10000
 path_save = './largeresnet/sessions/model.ckpt'
 start_from = ''
 
@@ -137,7 +137,7 @@ def resnet(x, train_phase):
 
 # Construct dataloader
 opt_data_train = {
-    #'data_h5': 'miniplaces_256_train.h5',
+    'data_h5': 'miniplaces_256_train.h5',
     'data_root': '../../data/images/',   # MODIFY PATH ACCORDINGLY
     'data_list': '../../data/train.txt', # MODIFY PATH ACCORDINGLY
     'load_size': load_size,
@@ -146,7 +146,7 @@ opt_data_train = {
     'randomize': True
     }
 opt_data_val = {
-    #'data_h5': 'miniplaces_256_val.h5',
+    'data_h5': 'miniplaces_256_val.h5',
     'data_root': '../../data/images/',   # MODIFY PATH ACCORDINGLY
     'data_list': '../../data/val.txt',   # MODIFY PATH ACCORDINGLY
     'load_size': load_size,
@@ -159,10 +159,10 @@ def res_net_run(batch_size, learning_rate, training_iters):
     # Resets the weight        
     tf.reset_default_graph();
 
-    loader_train = DataLoaderDisk(**opt_data_train)
-    loader_val = DataLoaderDisk(**opt_data_val)
-    #loader_train = DataLoaderH5(**opt_data_train)
-    #loader_val = DataLoaderH5(**opt_data_val)
+    #loader_train = DataLoaderDisk(**opt_data_train)
+    #loader_val = DataLoaderDisk(**opt_data_val)
+    loader_train = DataLoaderH5(**opt_data_train)
+    loader_val = DataLoaderH5(**opt_data_val)
 
     # tf Graph input
     x = tf.placeholder(tf.float32, [None, fine_size, fine_size, c])

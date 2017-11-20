@@ -116,6 +116,8 @@ ENV/
 /model/tensorflow/vggnet/logs/*
 /model/tensorflow/resnet/sessions/*
 /model/tensorflow/resnet/logs/*
+/model/tensorflow/largeresnet/logs/*
+/model/tensorflow/largeresnet/sessions/*
 
 
 

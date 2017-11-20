@@ -2,3 +2,9 @@ alexnet
 drop=0.7, lr=5e-05, iters=10000, bs=48, --> accuracy = (0.333433504861, 0.630408675911)
 alexnet
 drop=0.8, lr=2.5e-05, iters=30000, bs=48, --> accuracy = (0.369391038011, 0.670272460064)
+alexnet
+drop=0.9, lr=1e-06, iters=30000, bs=48, --> accuracy = (0.218349365446, 0.479266843973)
+alexnet
+drop=0.9, lr=2.5e-05, iters=30000, bs=48, --> accuracy = (0.362780460873, 0.657852585499)
+alexnet
+drop=0.85, lr=2.5e-05, iters=30000, bs=48, --> accuracy = (0.36478366624, 0.659354991924)
