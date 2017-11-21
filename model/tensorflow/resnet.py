@@ -1,5 +1,7 @@
 import os, datetime
 import numpy as np
+import matplotlib
+matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 import tensorflow as tf
 from tensorflow.contrib.layers.python.layers import batch_norm
@@ -241,7 +243,6 @@ def res_net_run(batch_size, learning_rate, training_iters):
         with open('resnet/results.txt', "a") as results:
             results.write("resnet\nlr={}, iters={}, bs={}, --> accuracy = ({}, {})\n".format(learning_rate, training_iters, batch_size, acc1_total, acc5_total))
 
-        print batch_accuracies
         # Create and store plot
         plt.figure(1)
         plt.subplot(211)
@@ -250,7 +251,6 @@ def res_net_run(batch_size, learning_rate, training_iters):
         plt.xlabel('Iteration')
         plt.ylabel('Accuracy')
         
-        print batch_losses
         plt.subplot(212)
         plt.plot(batch_losses[0], 'b-')
         plt.title('Batch Loss on Validation Set')

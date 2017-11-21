@@ -1,0 +1,2 @@
+largeresnet
+lr=1e-05, iters=10000, bs=128, --> accuracy = (0.226762820513, 0.50140224359)

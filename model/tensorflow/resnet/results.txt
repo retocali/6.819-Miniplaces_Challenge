@@ -12,3 +12,11 @@ resnet
 lr=1e-05, iters=5, bs=4, --> accuracy = (0.0, 0.0002)
 resnet
 lr=1e-05, iters=5, bs=4, --> accuracy = (0.0, 0.0)
+resnet
+lr=1e-05, iters=10000, bs=48, --> accuracy = (0.19010417167, 0.442207548624)
+resnet
+lr=1e-05, iters=5, bs=48, --> accuracy = (0.00580929503597, 0.0420673086595)
+resnet
+lr=1e-05, iters=5, bs=48, --> accuracy = (0.00771233997344, 0.0428685907167)
+resnet
+lr=1e-05, iters=10000, bs=48, --> accuracy = (0.18830128786, 0.42878607331)
