@@ -148,6 +148,10 @@ def alex_net_run(dropout, batch_size, learning_rate, training_iters):
 	# define summary writer
 	writer = tf.summary.FileWriter('./alexnet/logs', graph=tf.get_default_graph())
 
+    # Track loss & accuracy for plotting
+    batch_losses = np.zeros((1, training_iters), dtype='f')
+    batch_accuracies = np.zeros((1, training_iters), dtype='f')   
+
 	# Launch the graph
 	with tf.Session() as sess:
 		# Initialization
@@ -179,6 +183,9 @@ def alex_net_run(dropout, batch_size, learning_rate, training_iters):
 				"{:.6f}".format(l) + ", Accuracy Top1 = " + \
 				"{:.4f}".format(acc1) + ", Top5 = " + \
 				"{:.4f}".format(acc5)
+
+            batch_losses[0,step] = l
+            batch_accuracies[0, step] = acc5
 				
 			# Run optimization op (backprop)
 			sess.run(train_optimizer, feed_dict={x: images_batch, y: labels_batch, keep_dropout: dropout, train_phase: True})
@@ -218,6 +225,27 @@ def alex_net_run(dropout, batch_size, learning_rate, training_iters):
 		# Write the results of the test
 		with open('alexnet/results.txt', "a") as results:
 		    	results.write("alexnet\ndrop={}, lr={}, iters={}, bs={}, --> accuracy = ({}, {})\n".format(dropout, learning_rate, training_iters, batch_size, acc1_total, acc5_total))   
+
+        print batch_accuracies
+        # Create and store plot
+        plt.figure(1)
+        plt.subplot(211)
+        plt.plot(batch_accuracies[0], 'b-')
+        plt.title('Batch Accuracy on Validation Set')
+        plt.xlabel('Iteration')
+        plt.ylabel('Accuracy')
+        
+        print batch_losses
+        plt.subplot(212)
+        plt.plot(batch_losses[0], 'b-')
+        plt.title('Batch Loss on Validation Set')
+        plt.xlabel('Iteration')
+        plt.ylabel('Loss')
+
+        plt.savefig('./alexnet/plots/alexnet.png')
+
+        np.savetxt('./alexnet/plots/alexnet_accuracies.npy', batch_accuracies)
+        np.savetxt('./alexnet/plots/alexnet_losses.npy', batch_losses)
 
 if __name__ == '__main__':
 	alex_net_run(dropout, batch_size, learning_rate, training_iters)
