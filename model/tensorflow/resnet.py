@@ -17,7 +17,7 @@ data_mean = np.asarray([0.45834960097,0.44674252445,0.41352266842])
 # Training Parameters
 learning_rate = 0.00001
 training_iters = 10000
-step_display = 500
+step_display = 1
 step_save = 10000
 path_save = './resnet/sessions/model.ckpt'
 start_from = ''

@@ -19,7 +19,7 @@ learning_rate = 0.000025
 dropout = 0.8
 training_iters = 10000
 epsilon = 0.01
-step_display = 500
+step_display = 1
 
 step_save = 10000
 path_save = './alexnet/sessions/model.ckpt'
