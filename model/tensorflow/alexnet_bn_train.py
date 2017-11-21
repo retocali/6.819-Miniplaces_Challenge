@@ -15,7 +15,7 @@ data_mean = np.asarray([0.45834960097,0.44674252445,0.41352266842])
 learning_rate = 0.0001
 dropout = 0.8
 training_iters = 10000
-epsilon = 0.05
+epsilon = 0.01
 step_display = 500
 
 step_save = 10000
@@ -157,7 +157,7 @@ def alex_net_run(dropout, batch_size, learning_rate, training_iters):
 			sess.run(init)
 		
 		step = 0
-                avg_acc = 0
+                rounds = {2000, 5000, 8000, 13000}
 		while step < training_iters:
 			# Load a batch of training data
 			images_batch, labels_batch = loader_train.next_batch(batch_size)
@@ -184,9 +184,8 @@ def alex_net_run(dropout, batch_size, learning_rate, training_iters):
 			sess.run(train_optimizer, feed_dict={x: images_batch, y: labels_batch, keep_dropout: dropout, train_phase: True})
 		        
                         # Change the learning rate based on accuracy so far
-                        if abs(avg_acc - acc5) > epsilon:
-                            learning_rate = min(learning_rate/2, 0.0000001)
-		        avg_acc = (avg_acc+acc5)/2.
+                        if step in rounds and step > 0.0000001:
+                            learning_rate = max(learning_rate/10, 0.0000001)
 
 			step += 1
 			# Save model
