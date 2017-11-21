@@ -1,5 +1,6 @@
 import os, datetime
 import numpy as np
+import matplotlib.pyplot as plt
 import tensorflow as tf
 from tensorflow.contrib.layers.python.layers import batch_norm
 from DataLoader import *
@@ -13,9 +14,9 @@ data_mean = np.asarray([0.45834960097,0.44674252445,0.41352266842])
 
 # Training Parameters
 learning_rate = 0.00001
-training_iters = 30000
-step_display = 5000
-step_save = 5000
+training_iters = 10000
+step_display = 500
+step_save = 10000
 path_save = './resnet/sessions/model.ckpt'
 start_from = ''
 
@@ -155,7 +156,7 @@ def res_net_run(batch_size, learning_rate, training_iters):
     # Evaluate model
     accuracy1 = tf.reduce_mean(tf.cast(tf.nn.in_top_k(logits, y, 1), tf.float32))
     accuracy5 = tf.reduce_mean(tf.cast(tf.nn.in_top_k(logits, y, 5), tf.float32))
-
+    
     # define initialization
     init = tf.global_variables_initializer()
 
@@ -164,6 +165,10 @@ def res_net_run(batch_size, learning_rate, training_iters):
 
     # define summary writer
     writer = tf.summary.FileWriter('./resnet/logs', graph=tf.get_default_graph())
+
+    # Track loss & accuracy for plotting
+    batch_losses = np.zeros((1, training_iters), dtype='f')
+    batch_accuracies = np.zeros((1, training_iters), dtype='f')    
 
     # Launch the graph
     with tf.Session() as sess:
@@ -197,9 +202,12 @@ def res_net_run(batch_size, learning_rate, training_iters):
                 "{:.4f}".format(acc1) + ", Top5 = " + \
                 "{:.4f}".format(acc5)
 
+            batch_losses[0,step] = l
+            batch_accuracies[0, step] = acc5
+
             # Run optimization op (backprop)
             sess.run(train_optimizer, feed_dict={x: images_batch, y: labels_batch, train_phase: True})
-                
+            
             step += 1
             
             # Save model
@@ -231,7 +239,28 @@ def res_net_run(batch_size, learning_rate, training_iters):
 
         # Write the results of the test
         with open('resnet/results.txt', "a") as results:
-            results.write("resnet\nlr={}, iters={}, bs={}, --> accuracy = ({}, {})\n".format(learning_rate, training_iters, batch_size, acc1_total, acc5_total))   
+            results.write("resnet\nlr={}, iters={}, bs={}, --> accuracy = ({}, {})\n".format(learning_rate, training_iters, batch_size, acc1_total, acc5_total))
+
+        print batch_accuracies
+        # Create and store plot
+        plt.figure(1)
+        plt.subplot(211)
+        plt.plot(batch_accuracies[0], 'b-')
+        plt.title('Batch Accuracy on Validation Set')
+        plt.xlabel('Iteration')
+        plt.ylabel('Accuracy')
+        
+        print batch_losses
+        plt.subplot(212)
+        plt.plot(batch_losses[0], 'b-')
+        plt.title('Batch Loss on Validation Set')
+        plt.xlabel('Iteration')
+        plt.ylabel('Loss')
+
+        plt.savefig('./resnet/plots/resnet.png')
+
+        np.savetxt('./resnet/plots/resnet_accuracies.npy', batch_accuracies)
+        np.savetxt('./resnet/plots/resnet_losses.npy', batch_losses)
 
 if __name__ == '__main__':
     res_net_run(batch_size, learning_rate, training_iters)
