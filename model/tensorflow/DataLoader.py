@@ -153,7 +153,7 @@ class DataLoaderDisk(object):
                 offset_w = (self.load_size-self.fine_size)/2
 
             images_batch[i, ...] = image[offset_h:offset_h+self.fine_size, offset_w:offset_w+self.fine_size, :]
-            labels_batch[i, ...] = self.lab_set[self._idx]
+            labels_batch[i, ...] = self.list_lab[self._idx]
             
             self._idx += 1
             if self._idx == self.num:
@@ -171,8 +171,8 @@ class DataLoaderDisk(object):
 
     def shuffle(self):
         perm = np.random.permutation(self.num)
-        self.im_set = self.im_set[perm] 
-        self.lab_set = self.lab_set[perm]
+        self.list_im = self.list_im[perm] 
+        self.list_lab = self.list_lab[perm]
 
 # Loading test data from disk
 class TestDataLoaderDisk(object):
@@ -220,8 +220,9 @@ class TestDataLoaderDisk(object):
         self._idx = 0
 
 
-def add_gaussian_noise(image):
-    sigma = np.random.normal(0, 1./4)
+def add_gaussian_noise(image, sigma=None):
+    if not sigma:
+        sigma = np.random.normal(0, 1./4)
     noise = np.random.normal(0, sigma, np.shape(image))
     return image+noise
 
@@ -236,7 +237,6 @@ def color_shift(image, n=0.1):
 def brightness_change(image, n=0.1):
     full_shift = np.zeros(np.shape(image))
     shift = np.random.normal(-n,n)
-    if (np.random.normal(0,1) > 0):
-        full_shift[:,:,i] = np.full_like(image, shift)
+    full_shift = np.full_like(np.shape(image), shift)
     return image+full_shift
 
