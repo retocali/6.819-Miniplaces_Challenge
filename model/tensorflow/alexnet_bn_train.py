@@ -1,6 +1,9 @@
 import os, datetime
 import numpy as np
 import tensorflow as tf
+import matplotlib
+matplotlib.use('Agg')
+import matplotlib.pyplot as plt
 from tensorflow.contrib.layers.python.layers import batch_norm
 from DataLoader import *
 
@@ -12,7 +15,7 @@ c = 3
 data_mean = np.asarray([0.45834960097,0.44674252445,0.41352266842])
 
 # Training Parameters
-learning_rate = 0.0001
+learning_rate = 0.000025
 dropout = 0.8
 training_iters = 10000
 epsilon = 0.01
@@ -148,9 +151,9 @@ def alex_net_run(dropout, batch_size, learning_rate, training_iters):
 	# define summary writer
 	writer = tf.summary.FileWriter('./alexnet/logs', graph=tf.get_default_graph())
 
-    # Track loss & accuracy for plotting
-    batch_losses = np.zeros((1, training_iters), dtype='f')
-    batch_accuracies = np.zeros((1, training_iters), dtype='f')   
+        # Track loss & accuracy for plotting
+        batch_losses = np.zeros((1, training_iters), dtype='f')
+        batch_accuracies = np.zeros((1, training_iters), dtype='f')   
 
 	# Launch the graph
 	with tf.Session() as sess:
@@ -184,8 +187,8 @@ def alex_net_run(dropout, batch_size, learning_rate, training_iters):
 				"{:.4f}".format(acc1) + ", Top5 = " + \
 				"{:.4f}".format(acc5)
 
-            batch_losses[0,step] = l
-            batch_accuracies[0, step] = acc5
+                        batch_losses[0,step] = l
+                        batch_accuracies[0, step] = acc5
 				
 			# Run optimization op (backprop)
 			sess.run(train_optimizer, feed_dict={x: images_batch, y: labels_batch, keep_dropout: dropout, train_phase: True})
@@ -226,7 +229,6 @@ def alex_net_run(dropout, batch_size, learning_rate, training_iters):
 		with open('alexnet/results.txt', "a") as results:
 		    	results.write("alexnet\ndrop={}, lr={}, iters={}, bs={}, --> accuracy = ({}, {})\n".format(dropout, learning_rate, training_iters, batch_size, acc1_total, acc5_total))   
 
-        print batch_accuracies
         # Create and store plot
         plt.figure(1)
         plt.subplot(211)
@@ -235,7 +237,6 @@ def alex_net_run(dropout, batch_size, learning_rate, training_iters):
         plt.xlabel('Iteration')
         plt.ylabel('Accuracy')
         
-        print batch_losses
         plt.subplot(212)
         plt.plot(batch_losses[0], 'b-')
         plt.title('Batch Loss on Validation Set')
